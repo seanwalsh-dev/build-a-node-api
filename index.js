@@ -20,6 +20,14 @@ const server = http.createServer(async (req, res) => {
     )
     sendJSONResponse (res, 200, filteredData, 'GET /api/continent requested')
 
+  } else if (req.url.startsWith('/api/country') && req.method === 'GET') {
+
+    const country = req.url.split('/').pop()
+    const filteredData = destinations.filter((destination) =>
+      destination.country.toLowerCase() === country.toLowerCase()
+    )
+    sendJSONResponse(res, 200, filteredData, 'GET /api/country requested')
+
   } else {
 
     const errObj = {error: "not found", message: "The requested route does not exist"}
