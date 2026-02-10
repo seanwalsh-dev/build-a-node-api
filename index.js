@@ -1,9 +1,8 @@
 import http from 'node:http'
 import { getDataFromDB } from './database/db.js'
+import { sendJSONResponse } from './utils/sendJSONResponse.js'
 
 const PORT = 8000
-
-
 
 const server = http.createServer(async (req, res) => {
   
@@ -11,29 +10,21 @@ const server = http.createServer(async (req, res) => {
   
   if (req.url === '/api' && req.method === 'GET'){
 
-    res.setHeader('Content-Type', 'application/json')
-    res.statusCode = 200
-    res.end(JSON.stringify(destinations), () => console.log('get /api requested'))
+    sendJSONResponse (res, 200, destinations, 'GET /api requested')
 
   } else if (req.url.startsWith('/api/continent') && req.method === 'GET') {
 
     const continent = req.url.split('/').pop()
-
     const filteredData = destinations.filter((destination) => 
       destination.continent.toLowerCase() === continent.toLowerCase()
     )
-
-    res.setHeader('Content-Type', 'application/json')
-    res.statusCode = 200
-    res.end(JSON.stringify(filteredData), () => console.log('GET /api/continent'))
-
+    sendJSONResponse (res, 200, filteredData, 'GET /api/continent requested')
 
   } else {
 
-    res.setHeader('Content-Type', 'application/json')
-    res.statusCode = 404
-    res.end(JSON.stringify({error: "not found", message: "The requested route does not exist"}))
-
+    const errObj = {error: "not found", message: "The requested route does not exist"}
+    sendJSONResponse (res, 404, errObj, 'request not found')
+  
   }
   
 })
