@@ -1,10 +1,6 @@
-export function getDataByPathParams (req, destinations) {
-  
-  const parameter = req.url.split('/')[2]
-  const value = req.url.split('/').pop()
-  
-  const filteredData = destinations.filter((destination) => 
-    destination[parameter].toLowerCase() === value.toLowerCase()
+export function getDataByPathParams (data, locationType, locationName) {
+
+  return data.filter((destination) => 
+    destination[locationType].toLowerCase() === locationName.toLowerCase()
   )
-  return filteredData
 }

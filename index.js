@@ -13,24 +13,19 @@ const server = http.createServer(async (req, res) => {
 
     sendJSONResponse (res, 200, destinations, 'GET /api requested')
 
-  } else if (req.url.startsWith('/api/continent') && req.method === 'GET') {
+  }else if (req.url.startsWith('/api/continent') && req.method === 'GET') {
 
-    // getDataByPathParams (req, destinations)
-    // const continent = req.url.split('/').pop()
-    // const filteredData = destinations.filter((destination) => 
-    //   destination.continent.toLowerCase() === continent.toLowerCase()
-    // )
-    sendJSONResponse (res, 200, getDataByPathParams(req, destinations), 'GET /api/continent requested')
+    const continent = req.url.split('/').pop()
+    const filteredData = getDataByPathParams (destinations, 'continent', continent)
+    sendJSONResponse (res, 200, filteredData, 'GET /api/continent requested')
 
-  } else if (req.url.startsWith('/api/country') && req.method === 'GET') {
+  }else if (req.url.startsWith('/api/country') && req.method === 'GET') {
 
     const country = req.url.split('/').pop()
-    const filteredData = destinations.filter((destination) =>
-      destination.country.toLowerCase() === country.toLowerCase()
-    )
+    const filteredData =  getDataByPathParams (destinations, 'country', country)
     sendJSONResponse(res, 200, filteredData, 'GET /api/country requested')
 
-  } else {
+  }else {
 
     const errObj = {error: "not found", message: "The requested route does not exist"}
     sendJSONResponse (res, 404, errObj, 'request not found')
