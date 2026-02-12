@@ -6,8 +6,14 @@ import { getDataByPathParams } from './utils/getDataByPathParams.js'
 const PORT = 8000
 
 const server = http.createServer(async (req, res) => {
-  
   const destinations = await getDataFromDB()
+
+  const urlObj = new URL(req.url, `http://${req.headers.host}`)
+  console.log('URL OBJ: ', urlObj)
+  console.log('urlObj.searchParams: ', urlObj.searchParams)
+
+  const queryObj = Object.fromEntries(urlObj.searchParams)
+  console.log('QUERY OBJ: ', queryObj)
   
   if (req.url === '/api' && req.method === 'GET'){
 
