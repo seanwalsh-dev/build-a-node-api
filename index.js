@@ -16,49 +16,47 @@ const server = http.createServer(async (req, res) => {
   console.log('QUERY OBJ: ', queryObj)
   // getDataByQueryParams(queryObj)
 
+  // ***  WORKING HERE  ******************************************************
+
+  // Array of allowed query parameters
+  const allowedKeys = ['country', 'continent', 'is_open_to_public']
+  
+  // keys from the query object
+  const queryObjKeys = Object.keys(queryObj)
+
+  // At least one allowed key exists
+  const hasAllowedKey = queryObjKeys.some((key) => allowedKeys.includes(key))
+
+  // No other keys exist
+  const hasOnlyAllowedKeys = queryObjKeys.every((key) => allowedKeys.includes(key))
+
+
+
   if (urlObj.search === '' && req.method === 'GET') {
     console.log('urlObj.pathname: ', urlObj.pathname)
     const filteredDestinations = destinations
     sendJSONResponse (res, 200, filteredDestinations, 'GET /api requested')
 
+  }else if (hasAllowedKey && hasOnlyAllowedKeys
+    // 'country' in queryObj || 
+    // 'continent' in queryObj || 
+    // 'is_open_to_public' in queryObj 
+  ){
+    const filteredDestinations = getDataByQueryParams(queryObj, destinations)
+
+    if(filteredDestinations.length > 0){
+      sendJSONResponse (res, 200, filteredDestinations, 'GET /api requested')
+    }else{
+      const errObj = {error: "not found", message: "There are no destinations with these parameters"}
+    sendJSONResponse (res, 404, errObj, 'request has no results')
+    }
+
+    
+
   }else {
-
-    //  *** MOVE TO getDataByQueryParams.js ***
-
-    const continent = queryObj.continent
-    const country = queryObj.country
-    const isOpen = queryObj.is_open_to_public
-
-    let filteredDestinations = destinations
-
-    if(continent){
-      filteredDestinations = filteredDestinations.filter((destination) => 
-        destination.continent.toLowerCase() === continent.toLowerCase()
-      )
-    }
-
-    if(country){
-      filteredDestinations = filteredDestinations.filter((destination) => 
-        destination.country.toLowerCase() === country.toLowerCase()
-      )
-    }
-
-    if(isOpen){
-      filteredDestinations = filteredDestinations.filter((destination) => 
-        destination.is_open_to_public.toString().toLowerCase() === isOpen.toLowerCase()
-      )
-      console.log('isOpen: ', isOpen.toLowerCase())
-    }
-
-    if(filteredDestinations.length === 0){
-      filteredDestinations = {error: "not found", message: "The requested route does not exist"}
-    }
-
-    sendJSONResponse (res, 200, filteredDestinations, 'GET /api requested')
+    const errObj = {error: "not found", message: "The requested route does not exist"}
+    sendJSONResponse (res, 404, errObj, 'request not found')
   }
-
-  //  *** MOVE TO getDataByQueryParams.js ***
-  
 })
 
 server.listen(PORT, () => console.log(`server running on port: ${PORT}`))
@@ -67,7 +65,9 @@ server.listen(PORT, () => console.log(`server running on port: ${PORT}`))
 
 
 
-
+// CHAT GPT SEARCH: how do you do 'country' in queryObj || 
+//     'continent' in queryObj || 
+//     'is_open_to_public' in queryObj  && no other queryObj
 
 
 
