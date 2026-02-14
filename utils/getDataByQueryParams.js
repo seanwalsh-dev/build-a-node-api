@@ -6,23 +6,36 @@ export function getDataByQueryParams(queryObj, destinations) {
   
   let filteredDestinations = destinations
 
+ 
+  
+  
+
+
   if(continent){
+    const continentLower = continent.toLowerCase()
     filteredDestinations = filteredDestinations.filter((destination) => 
-      destination.continent.toLowerCase() === continent.toLowerCase()
+      destination.continent.toLowerCase() === continentLower
     )
   }
 
   if(country){
+    const countryLower = country.toLowerCase()
     filteredDestinations = filteredDestinations.filter((destination) => 
-      destination.country.toLowerCase() === country.toLowerCase()
+      destination.country.toLowerCase() === countryLower
     )
   }
 
   if(isOpen){
-    filteredDestinations = filteredDestinations.filter((destination) => 
-      destination.is_open_to_public === JSON.parse(isOpen.toLowerCase())
+    const isOpenLower = isOpen.toLowerCase()
+    if(isOpenLower === 'true' || isOpenLower === 'false'){
+      filteredDestinations = filteredDestinations.filter((destination) => 
+      destination.is_open_to_public === JSON.parse(isOpenLower)
     )
-    console.log('isOpen: ', isOpen.toLowerCase())
+
+    }else{
+      filteredDestinations = []
+    }
+    
   }
 
   return filteredDestinations
